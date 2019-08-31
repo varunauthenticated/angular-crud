@@ -1,0 +1,50 @@
+{
+  "employees": [
+    {
+      "id": 1,
+      "name": "Birian",
+      "gender": "Male",
+      "contactPreference": "Email",
+      "email": "varunstar93@gmail.com",
+      "dateOfBirth": "1998/12/28",
+      "department": "3",
+      "isActive": true,
+      "photoPath": "assets/images/1.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Ranjeet",
+      "gender": "Male",
+      "contactPreference": "Phone",
+      "phoneNumber": 2929808070,
+      "dateOfBirth": "1992/3/20",
+      "department": "3",
+      "isActive": false,
+      "photoPath": "assets/images/3.jpg"
+    },
+    {
+      "id": 4,
+      "name": "David",
+      "gender": "Male",
+      "contactPreference": "Phone",
+      "phoneNumber": 8989898989,
+      "email": "dav@vid.com",
+      "dateOfBirth": "2019-08-11T03:42:55.000Z",
+      "department": "1",
+      "isActive": true,
+      "photoPath": "assets/images/1.jpg"
+    },
+    {
+      "id": 5,
+      "name": "veerbhadra",
+      "gender": "Male",
+      "contactPreference": "Email",
+      "phoneNumber": 2224442331,
+      "email": "veera@bhadra.com",
+      "dateOfBirth": "2019-08-04T03:46:20.000Z",
+      "department": "2",
+      "isActive": true,
+      "photoPath": "assets/images/1.jpg"
+    }
+  ]
+}

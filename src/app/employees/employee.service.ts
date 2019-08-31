@@ -1,11 +1,15 @@
 import { Employee } from '../models/employee.model';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class EmployeeService {
-  private listEmployees: Employee[]  = [
+  constructor(private httpClient: HttpClient) { }
+  baseUrl = 'http://localhost:3000/employees';
+
+  private listEmployees: Employee[] = [
     {
       id: 1,
       name: 'Varun',
@@ -42,30 +46,43 @@ export class EmployeeService {
   ];
 
   getEmployees(): Observable<Employee[]> {
-    return of(this.listEmployees).pipe(delay(2000));
+    // return of(this.listEmployees).pipe(delay(2000));
+    return this.httpClient.get<Employee[]>(this.baseUrl).pipe(catchError(this.handleError));
   }
 
-  getEmployee(id: number): Employee {
-    return this.listEmployees.find(e => e.id === id);
-  }
-
-  save(employee: Employee) {
-    if (employee.id === null) {
-      const maxId = this.listEmployees.reduce((e1, e2) => {
-        return (e1.id > e2.id) ? e1 : e2;
-      }).id;
-      employee.id = maxId + 1;
-      this.listEmployees.push(employee);
+  handleError(errorResponse: HttpErrorResponse) {
+    if (errorResponse.error instanceof ErrorEvent) {
     } else {
-      const foundIndex = this.listEmployees.findIndex(e => e.id === employee.id);
-      this.listEmployees[foundIndex] = employee;
+      console.error('Server Side Error: ', errorResponse);
     }
+
+    return throwError('There is a problem with the service. We are notified and working on it. Please try again later');
   }
 
-  deleteEmployee(id: number) {
-    const i = this.listEmployees.findIndex(e => e.id === id);
-    if (i !== -1) {
-      this.listEmployees.splice(i, 1);
-    }
+  getEmployee(id: number): Observable<Employee> {
+    return this.httpClient.get<Employee>(`${this.baseUrl}/${id}`)
+    .pipe(catchError(this.handleError));
+  }
+
+  addEmployee(employee: Employee): Observable<Employee> {
+    return this.httpClient.post<Employee>(this.baseUrl, employee, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    }).pipe(catchError(this.handleError));
+  }
+
+  updateEmployee(employee: Employee): Observable<void> {
+    return this.httpClient.put<void>(`${this.baseUrl}/${employee.id}`, employee, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    }).pipe(catchError(this.handleError));
+
+  }
+
+  deleteEmployee(id: number): Observable<void> {
+    return this.httpClient.delete<void>(`${this.baseUrl}/${id}`)
+    .pipe(catchError(this.handleError));
   }
 }

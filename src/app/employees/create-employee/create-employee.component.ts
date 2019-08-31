@@ -12,7 +12,7 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./create-employee.component.css']
 })
 export class CreateEmployeeComponent implements OnInit {
-  @ViewChild('employeeForm', {static: false}) public createEmployeeForm: NgForm;
+  @ViewChild('employeeForm', {static: true}) public createEmployeeForm: NgForm;
 
   previewPhoto = false;
   panelTitle: string;
@@ -65,15 +65,32 @@ export class CreateEmployeeComponent implements OnInit {
       this.createEmployeeForm.reset();
     } else {
       this.panelTitle = 'Edit Employee';
-      this.employee = Object.assign({}, this.employeeService.getEmployee(id));
+      this.employeeService.getEmployee(id).subscribe(
+        (employee) => this.employee = employee,
+        (err: any) => console.log(err)
+      );
     }
   }
 
   saveEmployee(): void {
-    const newEmployee: Employee = Object.assign({}, this.employee);
-    this.employeeService.save(newEmployee);
-    this.createEmployeeForm.reset();
-    this.router.navigate(['list']);
+    if (this.employee.id == null) {
+    this.employeeService.addEmployee(this.employee).subscribe(
+      (data: Employee) => {
+        console.log(data);
+        this.createEmployeeForm.reset();
+        this.router.navigate(['list']);
+      },
+      (error: any) => console.log(error)
+    );
+    } else {
+      this.employeeService.updateEmployee(this.employee).subscribe(
+        () => {
+          this.createEmployeeForm.reset();
+          this.router.navigate(['list']);
+        },
+        (error: any) => console.log(error)
+      );
+    }
   }
 
   togglePhotoPreview(imgPath: string) {
